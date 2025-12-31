@@ -9,9 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
 	"github.com/manifoldco/promptui"
-	// "golang.org/x/tools/go/analysis/passes/sortslice"
 )
 
 type Expense struct {
@@ -21,6 +19,8 @@ type Expense struct {
 	Amount		float64	`json:"amount"`
 	Date		string	`json:"date"`
 }
+
+// TODO: Class for menu list
 
 const filename = "expenses.json"
 var scanner = bufio.NewScanner(os.Stdin)
@@ -104,9 +104,11 @@ func printExp(exp Expense) {
 	fmt.Println("Description: " + exp.Description)
 	fmt.Println("Category: " + exp.Category)
 	fmt.Println("Amount: " + strconv.FormatFloat(float64(exp.Amount), 'f', 2, 64))
-	fmt.Println("Created at: " + exp.Date)
+	fmt.Println("Last update: " + exp.Date)
 	section()
 }
+
+func validMoney()
 
 func view() {
 	exp := load()
@@ -141,10 +143,17 @@ func add() {
 	fmt.Println("Input expense category:")
 	scanner.Scan()
 	ex.Category = scanner.Text()
+	// TODO: use arrow
 	
 	fmt.Println("Input expense amount:")
 	scanner.Scan()
-	ex.Amount, _ = strconv.ParseFloat(scanner.Text(), 64)
+	val, err := strconv.ParseFloat(scanner.Text(), 64)
+
+	if err != nil {
+		// TODO: check valid
+	} else {
+		ex.Amount = val
+	}
 	
 	ex.Date = time.Now().Format("31-10-2006")	
 
@@ -170,4 +179,8 @@ func limit() {
 
 func export() {
 	// TODO: export csv
+}
+
+func warning() {
+	// TODO: warning alert
 }
