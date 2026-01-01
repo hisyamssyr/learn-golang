@@ -1,1 +1,16 @@
-[]
+[
+ {
+  "id": "E0001",
+  "desc": "kaka",
+  "cat": "kks",
+  "amount": 0,
+  "date": "21-10-2026"
+ },
+ {
+  "id": "T0002",
+  "desc": "ksks",
+  "cat": "ksks",
+  "amount": 0,
+  "date": "21-10-2026"
+ }
+]
