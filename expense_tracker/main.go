@@ -49,21 +49,21 @@ func exitProgram() {
 	os.Exit(0)
 }
 
-func load()([]Expense) {
+func load() []Expense {
 	data, err := os.ReadFile(filename)
 	checkError(err)
-	
+
 	var exp []Expense
 	err = json.Unmarshal(data, &exp)
 	checkError(err)
-	
+
 	return exp
 }
 
 func save(exp []Expense) {
 	data, err := json.MarshalIndent(exp, "", " ")
 	checkError(err)
-	
+
 	err = os.WriteFile(filename, data, 0664)
 	checkError(err)
 }
@@ -72,13 +72,13 @@ func section() {
 	fmt.Println(strings.Repeat("=", 40))
 }
 
-func generateId(exp []Expense)(string) {
+func generateId(exp []Expense) string {
 	idx := len(exp)
-	
+
 	if idx == 0 {return "E0001"}
 	lastId := exp[idx - 1].Id[1:]
 	intId, _ := strconv.Atoi(lastId)
-	
+
 	return fmt.Sprintf("T%04d", intId + 1)
 }
 
@@ -92,13 +92,19 @@ func printExp(exp Expense) {
 	section()
 }
 
-func validMoney() {
-	
+func parseMoney(val string) (bool, float64) {
+	num, err := strconv.ParseFloat(val, 64)
+
+	if err != nil || num < 0.0 {
+		return false, 0
+	} else {
+		return true, num
+	}
 }
 
 func view() {
 	exp := load()
-	
+
 	if len(exp) == 0 {
 		section()
 		fmt.Println("Expense is empty...")
@@ -106,50 +112,59 @@ func view() {
 	} else {
 		sort.Slice(exp, func(i, j int) bool { return exp[i].Date < exp[j].Date})
 	}
-	
+
 	for _, val := range exp {
 		printExp(val)
 	}
 	pause()
 }
-	
+
 func add() {
 	exp := load()
-	
+
 	section()
 	fmt.Println("Add new expense")
 	section()
-	
+
 	var ex Expense
 	ex.Id = generateId(exp)
-	
+
 	fmt.Println("Input expense description:")
 	scanner.Scan()
 	ex.Description = scanner.Text()
-	
-	fmt.Println("Input expense category:")
-	scanner.Scan()
-	ex.Category = scanner.Text()
-	// TODO: use arrow
-	
+
+	_, ex.Category = showMenu("Select Expense Category", categoryMenu())
+
 	fmt.Println("Input expense amount:")
-	scanner.Scan()
-	val, err := strconv.ParseFloat(scanner.Text(), 64)
-	
-	if err != nil {
-		// TODO: check valid
-		} else {
+	// scanner.Scan()
+	// val, err := strconv.ParseFloat(scanner.Text(), 64)
+
+	// if err != nil {
+	// 	// TODO: check valid
+	// } else {
+	// 	ex.Amount = val
+	// }
+	for true {
+		scanner.Scan()
+		isValid, val := parseMoney(scanner.Text())
+
+		if isValid {
 			ex.Amount = val
+			break
+		} else {
+			fmt.Println("Value doesn't valid, must an positive integer...")
 		}
-		
-	ex.Date = time.Now().Format("31-10-2006")	
-	
+
+	}
+
+	ex.Date = time.Now().Format("31-10-2006")
+
 	exp = append(exp, ex)
 	save(exp)
 }
-	
+
 func update() {
-	// TODO: search id, show if found, edit desc/amount/category, save 
+	// TODO: search id, show if found, edit desc/amount/category, save
 }
 
 func delete() {
@@ -165,11 +180,53 @@ func limit() {
 }
 
 func export() {
-// TODO: export csv
+	// TODO: export csv
 }
 
-func warning() {
+func checkWarning() {
 	// TODO: warning alert
+}
+
+func mainMenu() []string {
+	menuItems := []string{
+		"View all expenses",
+		"Add new expense",
+		"Update an expense",
+		"Delete an expense",
+		"Show expenses summary",
+		"Set monthly budget limit",
+		"Export to .csv file",
+		"Exit",
+	}
+
+	return menuItems
+}
+
+func categoryMenu() []string {
+	menuItems := []string{
+		"Food & Drinks",   // makan, minum, nongkrong
+		"Transportation",  // bensin, tiket, parkir
+		"Utilities",       // listrik, air, internet
+		"Housing",         // sewa, cicilan rumah
+		"Entertainment",   // film, game, hobi
+		"Shopping",        // belanja kebutuhan, pakaian
+		"Health",          // obat, dokter, gym
+		"Education",       // kursus, buku
+		"Travel",          // liburan, hotel
+		"Others",          // kategori tambahan
+	}
+
+	return menuItems
+}
+
+func showMenu(label string, menu []string) (int, string) {
+	prompt := promptui.Select{
+		Label: label,
+		Items: menu,
+	}
+	idx, choice, _ := prompt.Run()
+
+	return idx, choice
 }
 
 func processMenu(index int) {
@@ -189,24 +246,8 @@ func main() {
 	for true {
 		clearScreen()
 
-		menuItems := []string{
-			"View all expenses",
-			"Add new expense",
-			"Update an expense",
-			"Delete an expense",
-			"Show expenses summary",
-			"Set monthly budget limit",
-			"Export to .csv file",
-			"Exit",
-		}
-	
-		prompt := promptui.Select{
-			Label: "SELECT MENU",
-			Items: menuItems,
-		}
-	
-		index, _, _ := prompt.Run()
-		processMenu(index)
+		menu, _ := showMenu("SELECT MENU", mainMenu())
+		processMenu(menu)
 	}
 
 	add()

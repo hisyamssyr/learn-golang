@@ -12,5 +12,40 @@
   "cat": "ksks",
   "amount": 0,
   "date": "21-10-2026"
+ },
+ {
+  "id": "T0003",
+  "desc": "ss",
+  "cat": "ss",
+  "amount": 0,
+  "date": "21-10-2026"
+ },
+ {
+  "id": "T0004",
+  "desc": "ss",
+  "cat": "ss",
+  "amount": 0,
+  "date": "21-10-2026"
+ },
+ {
+  "id": "T0005",
+  "desc": "ss",
+  "cat": "ss",
+  "amount": 0,
+  "date": "21-10-2026"
+ },
+ {
+  "id": "T0006",
+  "desc": "ngocok pagi",
+  "cat": "Utilities",
+  "amount": 20000,
+  "date": "21-10-2026"
+ },
+ {
+  "id": "T0007",
+  "desc": "koko",
+  "cat": "Housing",
+  "amount": -0,
+  "date": "21-10-2026"
  }
 ]
