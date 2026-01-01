@@ -136,14 +136,6 @@ func add() {
 	_, ex.Category = showMenu("Select Expense Category", categoryMenu())
 
 	fmt.Println("Input expense amount:")
-	// scanner.Scan()
-	// val, err := strconv.ParseFloat(scanner.Text(), 64)
-
-	// if err != nil {
-	// 	// TODO: check valid
-	// } else {
-	// 	ex.Amount = val
-	// }
 	for true {
 		scanner.Scan()
 		isValid, val := parseMoney(scanner.Text())
